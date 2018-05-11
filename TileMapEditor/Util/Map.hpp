@@ -31,7 +31,6 @@ public:
     void setTexture(sf::Vector2u pos, int tileNum);
     
     void exportTextures(const std::string& fileName);
-    void export
     
     bool walkable(sf::Vector2u pos);
     
