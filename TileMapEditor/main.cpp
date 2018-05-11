@@ -9,6 +9,7 @@
 int main()
 {
     bool box{false};
+    bool layer{false};
     Input input;
     
     //Map Box
@@ -55,6 +56,7 @@ int main()
     Map map;
     map.setSize(sf::Vector2u(15,15),16);
     map.loadTextures("TextureNums1.txt", textures.get(Texture::Pokemon), 1);
+    map.loadTextures("TextureNums1-2.txt", textures.get(Texture::Pokemon), 2);
     map.loadWalkable("Walkable1.txt");
     
     // create the window
@@ -83,7 +85,12 @@ int main()
     palette.setTexture(textures.get(Texture::Pokemon));
     int desired{0};
     
-    
+    sf::Text lyer;
+    lyer.setFont(font);
+    lyer.setCharacterSize(50);
+    lyer.setScale(.25,.25);
+    lyer.setString("1");
+    lyer.setPosition(200, 200);
     
     while (window.isOpen())
     {
@@ -99,8 +106,11 @@ int main()
             
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)){
                 if(box == false){
-                    mapRect.move(0,16);
-                    posY++;
+                    if((posY + height)*16 < map.height()){
+                        std::cout<<(posY+width)*16<<" "<<map.height()<<std::endl;
+                        mapRect.move(0,16);
+                        posY++;
+                    }
                 }
                 if(box == true){
                     rect.move(0,16);
@@ -109,8 +119,10 @@ int main()
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){
                 if(box == false){
-                    mapRect.move(16,0);
-                    posX++;
+                    if((posX + width)*16 < map.width()){
+                        mapRect.move(16,0);
+                        posX++;
+                    }
                 }
                 if(box == true){
                     rect.move(16,0);
@@ -119,8 +131,10 @@ int main()
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
                 if(box == false){
-                    mapRect.move(-16,0);
-                    posX--;
+                    if(posX > 0){
+                        mapRect.move(-16,0);
+                        posX--;
+                    }
                 }
                 if(box == true){
                     rect.move(-16,0);
@@ -129,8 +143,10 @@ int main()
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)){
                 if(box == false){
-                    mapRect.move(0,-16);
-                    posY--;
+                    if(posY > 0){
+                        mapRect.move(0,-16);
+                        posY--;
+                    }
                 }
                 if(box == true){
                     rect.move(0,-16);
@@ -138,23 +154,33 @@ int main()
                 }
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)){
-                for(int i = 0; i < width; i++){
-                    for(int j = 0; j < height; j++){
-                         map.setTexture(sf::Vector2u(posX+i,posY+j), rPosY*(textures.get(Texture::Pokemon).getSize().x/16) + rPosX);
+                if(layer == false){
+                    for(int i = 0; i < width; i++){
+                        for(int j = 0; j < height; j++){
+                             map.setTexture(sf::Vector2u(posX+i,posY+j), rPosY*(textures.get(Texture::Pokemon).getSize().x/16) + rPosX,1);
+                        }
+                    }
+                }else if(layer == true){
+                    for(int i = 0; i < width; i++){
+                        for(int j = 0; j < height; j++){
+                            map.setTexture(sf::Vector2u(posX+i,posY+j), rPosY*(textures.get(Texture::Pokemon).getSize().x/16) + rPosX,2);
+                        }
                     }
                 }
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Return)){
                 map.exportTextures("NewTexture.txt");
+                map.exportWalkable("NewWalkable.txt");
             }
-            if(input.getKeyUp(0)){
+            if(input.getKey(0)){
                 for(int i = 0; i < width; i++){
                     for(int j = 0; j < height; j++){
                          map.setWalkable(sf::Vector2u(posX+i,posY+j), false);
                     }
                 }
             }
-            if(input.getKeyUp(5)){
+
+            if(input.getKey(5)){
                 for(int i = 0; i < width; i++){
                     for(int j = 0; j < height; j++){
                         map.setWalkable(sf::Vector2u(posX+i,posY+j), true);
@@ -165,12 +191,38 @@ int main()
                 box = !box;
             }
             if(input.getKeyUp(3)){
-                mapRect.setSize(sf::Vector2f(mapRect.getSize().x,16+mapRect.getSize().y));
-                height++;
+                if((posY+height)*16 < map.height()){
+                    mapRect.setSize(sf::Vector2f(mapRect.getSize().x,16+mapRect.getSize().y));
+                    height++;
+                }else{
+                    if(posY > 0){
+                        posY--;
+                        mapRect.move(0,-16);
+                        mapRect.setSize(sf::Vector2f(mapRect.getSize().x,16+mapRect.getSize().y));
+                        height++;
+                    }
+                }
             }
             if(input.getKeyUp(4)){
-                mapRect.setSize(sf::Vector2f(16+mapRect.getSize().x,mapRect.getSize().y));
-                width++;
+                if((posX+width)*16 < map.width()){
+                    mapRect.setSize(sf::Vector2f(16+mapRect.getSize().x,mapRect.getSize().y));
+                    width++;
+                }else{
+                    if(posX > 0){
+                        posX--;
+                        mapRect.move(-16,0);
+                        mapRect.setSize(sf::Vector2f(16+mapRect.getSize().x,mapRect.getSize().y));
+                        width++;
+                    }
+                }
+            }
+            if(input.getKeyUp(6)){
+                layer = !layer;
+                if(layer == false){
+                    lyer.setString("1");
+                }else{
+                    lyer.setString("2");
+                }
             }
             
             
@@ -184,7 +236,8 @@ int main()
         
         //draw view1
         window.clear();
-        map.draw(&window);
+        map.draw(&window,1);
+        map.draw(&window, 2);
         window.draw(mapRect);
         window.draw(pos);
         window.draw(viewRect);
@@ -192,7 +245,9 @@ int main()
         window.setView(view2);
         window.draw(palette);
         window.draw(rect);
+        window.draw(lyer);
         //display
+ 
         window.display();
     }
     

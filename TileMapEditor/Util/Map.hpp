@@ -28,16 +28,18 @@ public:
     //Mutator Methods
     void setSize(sf::Vector2u size, unsigned int tSize);
     void setWalkable(sf::Vector2u pos, bool walkable);
-    void setTexture(sf::Vector2u pos, int tileNum);
+    void setTexture(sf::Vector2u pos, int tileNum, int layer);
     
+    //Functions for exporting
     void exportTextures(const std::string& fileName);
+    void exportWalkable(const std::string& fileName);
     
     bool walkable(sf::Vector2u pos);
     
     unsigned int interactable(sf::Vector2u pos);
     sf::Vector2f getTilePosition(sf::Vector2u pos);
     void draw(sf::RenderWindow *window, sf::Vector2f viewSize, sf::Vector2u TilePosition, int layer);
-    void draw(sf::RenderWindow *window);
+    void draw(sf::RenderWindow *window, int layer);
     void loadWalkable(const std::string& fileName);
     void loadInteractable(const std::string& fileName);
     void loadTextures(const std::string& fileName,const sf::Texture& spriteSheet, int layerNumber);

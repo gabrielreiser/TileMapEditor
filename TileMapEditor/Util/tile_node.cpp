@@ -80,7 +80,6 @@ void TileNode::setTexture(const sf::Texture& tex, int layer){
 void TileNode::setTextureRect(sf::IntRect texRect, int layer){
     if(layer == 1){
         this->texture.setTextureRect(texRect);
-
     }
     if(layer == 2){
         this->textureLayer2.setTextureRect(texRect);

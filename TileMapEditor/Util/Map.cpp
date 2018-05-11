@@ -210,10 +210,18 @@ void Map::draw(sf::RenderWindow *window, sf::Vector2f viewSize, sf::Vector2u til
     }
 }
 
-void Map::draw(sf::RenderWindow *window){
-    for(int i = 0; i < numCols; i++){
-        for(int j = 0; j < numRows; j++){
-            window->draw(tiles.at(i).at(j).getRect(1));
+void Map::draw(sf::RenderWindow *window, int layer){
+    if(layer == 1){
+        for(int i = 0; i < numCols; i++){
+            for(int j = 0; j < numRows; j++){
+                window->draw(tiles.at(i).at(j).getRect(1));
+            }
+        }
+    }else if(layer == 2){
+        for(int i = 0; i < numCols; i++){
+            for(int j = 0; j < numRows; j++){
+                window->draw(tiles.at(i).at(j).getRect(2));
+            }
         }
     }
 }
@@ -269,9 +277,13 @@ void Map::setWalkable(sf::Vector2u pos, bool walkable){
     this->tiles.at(pos.x).at(pos.y).setWalkable(walkable);
 }
 
-void Map::setTexture(sf::Vector2u pos, int tileNum){
-    tiles.at(pos.x).at(pos.y).setTextureRect(getTextureRect(tileNum), 1);
-    tiles.at(pos.x).at(pos.y).setTextureKey(tileNum);
+void Map::setTexture(sf::Vector2u pos, int tileNum, int layer){
+    if(layer == 1){
+        tiles.at(pos.x).at(pos.y).setTextureRect(getTextureRect(tileNum), 1);
+        tiles.at(pos.x).at(pos.y).setTextureKey(tileNum);
+    }else if(layer == 2){
+        tiles.at(pos.x).at(pos.y).setTextureRect(getTextureRect(tileNum), 2);
+    }
 }
 
 
@@ -322,6 +334,23 @@ void Map::exportTextures(const std::string& fileName){
         for(int i = 0; i < numCols; i++){
             for(int j = 0; j < numRows; j++){
                 ofs<<std::to_string(tiles.at(j).at(i).getTextureKey());
+                ofs<<" ";
+            }
+            ofs<<std::endl;
+        }
+    }else{
+        ofs.close();
+        exit(EXIT_FAILURE);
+    }
+    ofs.close();
+}
+
+void Map::exportWalkable(const std::string& fileName){
+    std::ofstream ofs(fileName);
+    if(ofs.is_open()){
+        for(int i = 0; i < numCols; i++){
+            for(int j = 0; j < numRows; j++){
+                ofs<<std::to_string(tiles.at(j).at(i).isWalkable());
                 ofs<<" ";
             }
             ofs<<std::endl;
