@@ -7,14 +7,16 @@
 #include "Input.hpp"
 #include "Grid.hpp"
 
-const constexpr int TILESIZE{128};
+constexpr int TILESIZE{16};
+constexpr int MAPWIDTH{15};
+constexpr int MAPHEIGHT{15};
 
 int main()
 {
     ResourceHolder<sf::Texture, Texture::ID> textures;
     ResourceHolder<sf::Font, Fonts::ID> fonts;
     try{
-        textures.load(Texture::Pokemon, "gun3_sheet.png");
+        textures.load(Texture::Pokemon, "Zelda.png");
         fonts.load(Fonts::Sansation, "sansation.ttf");
     }catch(std::runtime_error& e){
         std::cout<<"Fail"<<std::endl;
@@ -75,7 +77,7 @@ int main()
     
     //Setting up map data
     Map map;
-    map.setSize(sf::Vector2u(50,50),TILESIZE);
+    map.setSize(sf::Vector2u(MAPWIDTH,MAPHEIGHT),TILESIZE);
     map.loadTextures("TextureNums1.txt", textures.get(Texture::Pokemon), 1);
     //map.loadTextures("TextureNums1-2.txt", textures.get(Texture::Pokemon), 2);
     map.loadWalkable("Walkable1.txt");
@@ -115,7 +117,6 @@ int main()
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)){
                 if(box == false){
                     if((mapPosY + height)*TILESIZE < map.height()){
-                        std::cout<<(mapPosY+width)*TILESIZE<<" "<<map.height()<<std::endl;
                         selectorMap.move(0,TILESIZE);
                         mapPosY++;
                     }
@@ -210,13 +211,12 @@ int main()
                             int top = static_cast<int>(selectorTexture.getPosition().y);
                             temp = sf::IntRect(left,top,TILESIZE,TILESIZE);
                             
-                            map.setTexture(sf::Vector2u(mapPosX+i,mapPosY+j), temp, 1);
+                            int tileNum = ((top/TILESIZE)*textures.get(Texture::Pokemon).getSize().x)/TILESIZE + left/TILESIZE;
                             
                             
-                            
-                            
-                            
-                            std::cout<<static_cast<int>(selectorTexture.getPosition().y)*(textures.get(Texture::Pokemon).getSize().x/TILESIZE) + static_cast<int>(selectorTexture.getPosition().x)<<std::endl;
+                            map.setTexture(sf::Vector2u(mapPosX+i,mapPosY+j), tileNum, 1);
+        
+                        std::cout<<static_cast<int>(selectorTexture.getPosition().y)*(textures.get(Texture::Pokemon).getSize().x/TILESIZE) + static_cast<int>(selectorTexture.getPosition().x)<<std::endl;
                         }
                     }
                    
