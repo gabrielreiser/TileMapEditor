@@ -18,7 +18,7 @@ namespace SoundAffects{
     enum ID{};
 }
 namespace Fonts{
-    enum ID{GeorgiaBold};
+    enum ID{GeorgiaBold, Sansation};
 }
 
 //Forward declarator of ResourceHolder Class

@@ -29,6 +29,7 @@ public:
     void setSize(sf::Vector2u size, unsigned int tSize);
     void setWalkable(sf::Vector2u pos, bool walkable);
     void setTexture(sf::Vector2u pos, int tileNum, int layer);
+    void setTexture(sf::Vector2u pos, sf::IntRect tile, int layer);
     
     //Functions for exporting
     void exportTextures(const std::string& fileName);

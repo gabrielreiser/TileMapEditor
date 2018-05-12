@@ -287,6 +287,15 @@ void Map::setTexture(sf::Vector2u pos, int tileNum, int layer){
         tiles.at(pos.x).at(pos.y).setFillColor(sf::Color::White, 2);
     }
 }
+void Map::setTexture(sf::Vector2u pos, sf::IntRect tile, int layer) {
+    if(layer == 1){
+        tiles.at(pos.x).at(pos.y).setTextureRect(tile, 1);
+        tiles.at(pos.x).at(pos.y).setTextureKey(0);
+    }else if(layer == 2){
+        tiles.at(pos.x).at(pos.y).setTextureRect(tile, 2);
+        tiles.at(pos.x).at(pos.y).setFillColor(sf::Color::White, 2);
+    }
+}
 
 
 
@@ -363,3 +372,6 @@ void Map::exportWalkable(const std::string& fileName){
     }
     ofs.close();
 }
+
+
+

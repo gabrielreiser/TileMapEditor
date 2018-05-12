@@ -5,64 +5,84 @@
 #include "Map.hpp"
 #include "ResourceHolder.hpp"
 #include "Input.hpp"
+#include "Grid.hpp"
+
+const constexpr int TILESIZE{128};
 
 int main()
 {
-    bool box{false};
-    bool layer{false};
-    Input input;
-    
-    //Map Box
-    sf::RectangleShape mapRect;
-    int posX{0};
-    int posY{0};
-    int width{1};
-    int height{1};
-    mapRect.setSize(sf::Vector2f(14,14));
-    mapRect.setOrigin(-1, -1);
-    mapRect.setFillColor(sf::Color(193, 66, 66, 150)); // red
-    mapRect.setOutlineColor(sf::Color::Black);
-    mapRect.setOutlineThickness(1);
-    
-    //Texture Box
-    sf::RectangleShape rect;
-    int rPosX{0};
-    int rPosY{0};
-    rect.setSize(sf::Vector2f(14,14));
-    rect.setOrigin(-1, -1);
-    rect.setFillColor(sf::Color(193, 66, 66, 150)); // red
-    rect.setOutlineColor(sf::Color::Black);
-    rect.setOutlineThickness(1);
-    
-    sf::Font font;
-    if(!font.loadFromFile("sansation.ttf"))
-        exit(EXIT_FAILURE);
-    sf::Text pos;
-    pos.setFont(font);
-    pos.setCharacterSize(30);
-    pos.setScale(.1, .1);
-    pos.setPosition(rect.getPosition().x + 7, rect.getPosition().y + 7);
-    pos.setString(std::to_string(posX) + "," + std::to_string(posY));
-    
-    
     ResourceHolder<sf::Texture, Texture::ID> textures;
+    ResourceHolder<sf::Font, Fonts::ID> fonts;
     try{
-        textures.load(Texture::Pokemon, "Zelda.png");
+        textures.load(Texture::Pokemon, "gun3_sheet.png");
+        fonts.load(Fonts::Sansation, "sansation.ttf");
     }catch(std::runtime_error& e){
         std::cout<<"Fail"<<std::endl;
         exit(EXIT_FAILURE);
     }
     
+    
+    
+    bool box{false};
+    bool layer{false};
+    Input input;
+    
+    
+
+    //Selector Box for map
+    sf::RectangleShape selectorMap;
+    int mapPosX{0};
+    int mapPosY{0};
+    int width{1};
+    int height{1};
+    selectorMap.setSize(sf::Vector2f(TILESIZE,TILESIZE));
+    selectorMap.setOrigin(0, 0);
+    selectorMap.setFillColor(sf::Color(193, 66, 66, 150)); // red
+    selectorMap.setOutlineColor(sf::Color::Black);
+    selectorMap.setOutlineThickness(.2);
+    
+    //Selector Box for Textures
+    sf::RectangleShape selectorTexture;
+    selectorTexture.setSize(sf::Vector2f(TILESIZE,TILESIZE));
+    selectorTexture.setOrigin(0, 0);
+    selectorTexture.setFillColor(sf::Color(193, 66, 66, 150)); // red
+    selectorTexture.setOutlineColor(sf::Color::Black);
+    selectorTexture.setOutlineThickness(.2);
+    
+    //Text to show what tile we are currently on
+    sf::Text mapPosition;
+    mapPosition.setFont(fonts.get(Fonts::Sansation));
+    mapPosition.setCharacterSize(30);
+    mapPosition.setScale(.1, .1);
+    mapPosition.setPosition(selectorTexture.getPosition().x + 7, selectorTexture.getPosition().y + 7);
+    mapPosition.setString(std::to_string(mapPosX) + "," + std::to_string(mapPosY));
+    
+    //Text to show the position of the texture selector
+    sf::Text texturePosition;
+    texturePosition.setFont(fonts.get(Fonts::Sansation));
+    texturePosition.setCharacterSize(30);
+    texturePosition.setScale(.1, .1);
+    texturePosition.setPosition(selectorTexture.getPosition().x + 7, selectorTexture.getPosition().y + 7);
+    texturePosition.setString(std::to_string(selectorTexture.getPosition().x) + "," + std::to_string(selectorTexture.getPosition().y));
+    
+    //Text to show the current layer
+    sf::Text lyer;
+    lyer.setFont(fonts.get(Fonts::Sansation));
+    lyer.setCharacterSize(50);
+    lyer.setScale(.25,.25);
+    lyer.setString("1");
+    lyer.setPosition(200, 200);
+    
+    //Setting up map data
     Map map;
-    map.setSize(sf::Vector2u(50,50),16);
+    map.setSize(sf::Vector2u(50,50),TILESIZE);
     map.loadTextures("TextureNums1.txt", textures.get(Texture::Pokemon), 1);
     //map.loadTextures("TextureNums1-2.txt", textures.get(Texture::Pokemon), 2);
     map.loadWalkable("Walkable1.txt");
     
-    // create the window
+    //Creating Window and two separate views
     sf::RenderWindow window(sf::VideoMode(512, 256), "Tilemap");
     window.setFramerateLimit(60);
-    
     //View1
     sf::View view1(sf::FloatRect(0, 0, 240, 240));
     view1.setViewport(sf::FloatRect(0, 0, 0.5f, 1));
@@ -70,37 +90,16 @@ int main()
     sf::View view2(sf::FloatRect(0, 0, 240, 240));
     view2.setViewport(sf::FloatRect(.5f, 0, 0.5f, 1));
     
-    sf::RectangleShape viewRect;
-    viewRect.setOutlineThickness(4);
-    viewRect.setSize(sf::Vector2f(view1.getSize().x-2*viewRect.getOutlineThickness(),view1.getSize().y-2*viewRect.getOutlineThickness()));
-    viewRect.setOrigin(view1.getCenter().x-viewRect.getOutlineThickness(),view1.getCenter().y-viewRect.getOutlineThickness());
-    viewRect.setPosition(view1.getCenter());
-    viewRect.setFillColor(sf::Color::Transparent);
-    viewRect.setOutlineColor(sf::Color::Yellow);
-    viewRect.setOutlineThickness(4);
-    
-
     //Texture palette
     sf::Sprite palette;
     palette.setTexture(textures.get(Texture::Pokemon));
     int desired{0};
     
-    sf::RectangleShape textureBox;
-    textureBox.setSize(sf::Vector2f(palette.getLocalBounds().width,palette.getLocalBounds().height));
-    textureBox.setPosition(palette.getPosition());
-    textureBox.setFillColor(sf::Color::Transparent);
-    textureBox.setOutlineColor(sf::Color::Yellow);
-    textureBox.setOutlineThickness(4);
+    //Create Texture Grid
+    Grid grid(textures.get(Texture::Pokemon).getSize(), TILESIZE, sf::Color::White);
+              
     
-    
-    
-    sf::Text lyer;
-    lyer.setFont(font);
-    lyer.setCharacterSize(50);
-    lyer.setScale(.25,.25);
-    lyer.setString("1");
-    lyer.setPosition(200, 200);
-    
+    //Main program loop to check for input
     while (window.isOpen())
     {
         // handle events
@@ -115,58 +114,90 @@ int main()
             
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)){
                 if(box == false){
-                    if((posY + height)*16 < map.height()){
-                        std::cout<<(posY+width)*16<<" "<<map.height()<<std::endl;
-                        mapRect.move(0,16);
-                        posY++;
+                    if((mapPosY + height)*TILESIZE < map.height()){
+                        std::cout<<(mapPosY+width)*TILESIZE<<" "<<map.height()<<std::endl;
+                        selectorMap.move(0,TILESIZE);
+                        mapPosY++;
                     }
                 }
                 if(box == true){
-                    if(rect.getPosition().y+16 < palette.getGlobalBounds().top+palette.getGlobalBounds().height){
-                        rect.move(0,16);
-                        rPosY++;
+                    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)){
+                        if(selectorTexture.getPosition().y+1 < palette.getGlobalBounds().top+palette.getGlobalBounds().height){
+                            selectorTexture.move(0,1);
+                        }
+                    }else{
+                        if(selectorTexture.getPosition().y+TILESIZE < palette.getGlobalBounds().top+palette.getGlobalBounds().height){
+                            int y = static_cast<int>(selectorTexture.getPosition().y)%TILESIZE;
+                            selectorTexture.move(0,TILESIZE-y);
+                        }
                     }
                 }
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)){
                 if(box == false){
-                    if((posX + width)*16 < map.width()){
-                        mapRect.move(16,0);
-                        posX++;
+                    if((mapPosX + width)*TILESIZE < map.width()){
+                        selectorMap.move(TILESIZE,0);
+                        mapPosX++;
                     }
                 }
-                if(rect.getPosition().x+16 < palette.getGlobalBounds().left+palette.getGlobalBounds().width){
-                    if(box == true){
-                        rect.move(16,0);
-                        rPosX++;
+                if(box == true){
+                    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)){
+                        if(selectorTexture.getPosition().x+TILESIZE <palette.getGlobalBounds().left+palette.getGlobalBounds().width){
+                            selectorTexture.move(1,0);
+                        }
+                    }else{
+                        if(selectorTexture.getPosition().x+TILESIZE < palette.getGlobalBounds().left+palette.getGlobalBounds().width){
+                            int x = static_cast<int>(selectorTexture.getPosition().x)%TILESIZE;
+                            selectorTexture.move(TILESIZE-x,0);
+                        }
                     }
                 }
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)){
                 if(box == false){
-                    if(posX > 0){
-                        mapRect.move(-16,0);
-                        posX--;
+                    if(mapPosX > 0){
+                        selectorMap.move(-TILESIZE,0);
+                        mapPosX--;
                     }
                 }
-                if(rect.getPosition().x-16 >= palette.getGlobalBounds().left){
-                    if(box == true){
-                        rect.move(-16,0);
-                        rPosX--;
+                if(box == true){
+                    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)){
+                        if(selectorTexture.getPosition().x-TILESIZE >= palette.getGlobalBounds().left){
+                            selectorTexture.move(-1,0);
+                        }
+                    }else{
+                        if(selectorTexture.getPosition().x-TILESIZE >= palette.getGlobalBounds().left){
+                            if(static_cast<int>(selectorTexture.getPosition().x)%TILESIZE == 0){
+                                selectorTexture.move(-TILESIZE,0);
+                            }else{
+                                int x =static_cast<int>(selectorTexture.getPosition().x)%TILESIZE;
+                                selectorTexture.move(-x,0);
+                            }
+                        }
                     }
                 }
             }
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)){
                 if(box == false){
-                    if(posY > 0){
-                        mapRect.move(0,-16);
-                        posY--;
+                    if(mapPosY > 0){
+                        selectorMap.move(0,-TILESIZE);
+                        mapPosY--;
                     }
                 }
-                if(rect.getPosition().y-16 >= palette.getGlobalBounds().top){
-                    if(box == true){
-                        rect.move(0,-16);
-                        rPosY--;
+                if(box == true){
+                    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)){
+                        if(selectorTexture.getPosition().y-TILESIZE >= palette.getGlobalBounds().top){
+                                selectorTexture.move(0,-1);
+                        }
+                    }else{
+                        if(selectorTexture.getPosition().y-TILESIZE >= palette.getGlobalBounds().top){
+                            if(static_cast<int>(selectorTexture.getPosition().y)%TILESIZE == 0){
+                                selectorTexture.move(0,-TILESIZE);
+                            }else{
+                                int y =static_cast<int>(selectorTexture.getPosition().y)%TILESIZE;
+                                selectorTexture.move(0,-y);
+                            }
+                        }
                     }
                 }
             }
@@ -174,17 +205,33 @@ int main()
                 if(layer == false){
                     for(int i = 0; i < width; i++){
                         for(int j = 0; j < height; j++){
-                             map.setTexture(sf::Vector2u(posX+i,posY+j), rPosY*(textures.get(Texture::Pokemon).getSize().x/16) + rPosX,1);
+                            sf::IntRect temp;
+                            int left = static_cast<int>(selectorTexture.getPosition().x);
+                            int top = static_cast<int>(selectorTexture.getPosition().y);
+                            temp = sf::IntRect(left,top,TILESIZE,TILESIZE);
+                            
+                            map.setTexture(sf::Vector2u(mapPosX+i,mapPosY+j), temp, 1);
+                            
+                            
+                            
+                            
+                            
+                            std::cout<<static_cast<int>(selectorTexture.getPosition().y)*(textures.get(Texture::Pokemon).getSize().x/TILESIZE) + static_cast<int>(selectorTexture.getPosition().x)<<std::endl;
                         }
                     }
-                }else if(layer == true){
+                   
+                } /*
+                     
+                     else if(layer == true){
                     for(int i = 0; i < width; i++){
                         for(int j = 0; j < height; j++){
-                            map.setTexture(sf::Vector2u(posX+i,posY+j), rPosY*(textures.get(Texture::Pokemon).getSize().x/16) + rPosX,2);
+                            map.setTexture(sf::Vector2u(mapPosX+i,mapPosY+j), texturePosY*(textures.get(Texture::Pokemon).getSize().x/TILESIZE) + texturePosX,2);
                         }
                     }
                 }
+                   */
             }
+                   
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Return)){
                 map.exportTextures("NewTexture.txt");
                 map.exportWalkable("NewWalkable.txt");
@@ -192,7 +239,7 @@ int main()
             if(input.getKey(0)){
                 for(int i = 0; i < width; i++){
                     for(int j = 0; j < height; j++){
-                         map.setWalkable(sf::Vector2u(posX+i,posY+j), false);
+                         map.setWalkable(sf::Vector2u(mapPosX+i,mapPosY+j), false);
                     }
                 }
             }
@@ -200,7 +247,7 @@ int main()
             if(input.getKey(5)){
                 for(int i = 0; i < width; i++){
                     for(int j = 0; j < height; j++){
-                        map.setWalkable(sf::Vector2u(posX+i,posY+j), true);
+                        map.setWalkable(sf::Vector2u(mapPosX+i,mapPosY+j), true);
                     }
                 }
             }
@@ -208,27 +255,27 @@ int main()
                 box = !box;
             }
             if(input.getKeyUp(3)){
-                if((posY+height)*16 < map.height()){
-                    mapRect.setSize(sf::Vector2f(mapRect.getSize().x,16+mapRect.getSize().y));
+                if((mapPosY+height)*TILESIZE < map.height()){
+                    selectorMap.setSize(sf::Vector2f(selectorMap.getSize().x,TILESIZE+selectorMap.getSize().y));
                     height++;
                 }else{
-                    if(posY > 0){
-                        posY--;
-                        mapRect.move(0,-16);
-                        mapRect.setSize(sf::Vector2f(mapRect.getSize().x,16+mapRect.getSize().y));
+                    if(mapPosY > 0){
+                        mapPosY--;
+                        selectorMap.move(0,-TILESIZE);
+                        selectorMap.setSize(sf::Vector2f(selectorMap.getSize().x,TILESIZE+selectorMap.getSize().y));
                         height++;
                     }
                 }
             }
             if(input.getKeyUp(4)){
-                if((posX+width)*16 < map.width()){
-                    mapRect.setSize(sf::Vector2f(16+mapRect.getSize().x,mapRect.getSize().y));
+                if((mapPosX+width)*TILESIZE < map.width()){
+                    selectorMap.setSize(sf::Vector2f(TILESIZE+selectorMap.getSize().x,selectorMap.getSize().y));
                     width++;
                 }else{
-                    if(posX > 0){
-                        posX--;
-                        mapRect.move(-16,0);
-                        mapRect.setSize(sf::Vector2f(16+mapRect.getSize().x,mapRect.getSize().y));
+                    if(mapPosX > 0){
+                        mapPosX--;
+                        selectorMap.move(-TILESIZE,0);
+                        selectorMap.setSize(sf::Vector2f(TILESIZE+selectorMap.getSize().x,selectorMap.getSize().y));
                         width++;
                     }
                 }
@@ -249,42 +296,47 @@ int main()
             }
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
                 if(palette.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))){
-                    sf::Vector2f mPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                    float relPosX = mPos.x - view2.getViewport().left;
-                    float relPosY = mPos.y - view2.getViewport().top;
-                    int tileNumX = relPosX / 16;
-                    int tileNumY = relPosY / 16;
-                    rPosX = tileNumX;
-                    rPosY = tileNumY;
-                    rect.setPosition(palette.getGlobalBounds().left + rPosX*16,palette.getGlobalBounds().top+rPosY*16);
+                    int x = static_cast<int>(window.mapPixelToCoords(sf::Mouse::getPosition(window)).x);
+                    x = x - x%TILESIZE;
+                    int y = static_cast<int>(window.mapPixelToCoords(sf::Mouse::getPosition(window)).y);
+                    y = y - y%TILESIZE;
+                    selectorTexture.setPosition(sf::Vector2f(x,y));
                 }
             }
         }
         input.update();
         
-        if(mapRect.getPosition().x > view1.getViewport().width){
-            view1.setCenter(mapRect.getPosition());
+        if(selectorMap.getPosition().x > view1.getViewport().width){
+            view1.setCenter(selectorMap.getPosition());
         }
+        view2.setCenter(selectorTexture.getPosition());
         
         
         window.setView(view1);
-        pos.setString(std::to_string(posX) + "," + std::to_string(posY));
-        pos.setPosition(mapRect.getPosition().x + 7, mapRect.getPosition().y + 7);
+        
+        //Updating Position Information for the two selectors
+        mapPosition.setString(std::to_string(mapPosX) + "," + std::to_string(mapPosY));
+        mapPosition.setPosition(selectorMap.getPosition().x + 7, selectorMap.getPosition().y + 7);
+        
+        texturePosition.setString(std::to_string(static_cast<int>(selectorTexture.getPosition().x)) + "," + std::to_string(static_cast<int>(selectorTexture.getPosition().y)));
+        texturePosition.setPosition(selectorTexture.getPosition().x + 7, selectorTexture.getPosition().y + 7);
         
         //draw view1
-        window.clear();
+        
+        
+        window.clear(sf::Color::Black);
         map.draw(&window,1);
         if(layer)
             map.draw(&window, 2);
-        window.draw(mapRect);
-        window.draw(pos);
-        window.draw(viewRect);
+        window.draw(selectorMap);
+        window.draw(mapPosition);
         //draw view2
         window.setView(view2);
         window.draw(palette);
-        window.draw(rect);
-        window.draw(textureBox);
+        window.draw(selectorTexture);
         window.draw(lyer);
+        window.draw(texturePosition);
+        window.draw(grid);
         //display
  
         window.display();
