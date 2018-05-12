@@ -11,7 +11,7 @@
 TileNode::TileNode(){
     this->walkable = false;
     texture.setFillColor(sf::Color::White);
-    textureLayer2.setFillColor(sf::Color::Transparent);
+    textureLayer2.setFillColor(sf::Color::Red); //FIXME
 
     texture.setSize(sf::Vector2f(16.f,16.f));
     textureLayer2.setSize(sf::Vector2f(16.f,16.f));
@@ -22,7 +22,7 @@ TileNode::TileNode(unsigned int size, sf::Vector2f position){
     this->walkable = true;
     this->interactable = 0;
     texture.setFillColor(sf::Color::White);
-    textureLayer2.setFillColor(sf::Color::Transparent);
+    textureLayer2.setFillColor(sf::Color::Red);     //FIXME
     texture.setSize(sf::Vector2f(size,size));
     textureLayer2.setSize(sf::Vector2f(size,size));
     texture.setPosition(position);
@@ -73,7 +73,6 @@ void TileNode::setTexture(const sf::Texture& tex, int layer){
         this->texture.setTexture(&tex);
     
     if(layer == 2){
-        textureLayer2.setFillColor(sf::Color::White);
         this->textureLayer2.setTexture(&tex);
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		16E79A6720A6C63100625AB8 /* Zelda.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E79A6620A6C63000625AB8 /* Zelda.png */; };
 		16EE3ED720A5E29100954488 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16EE3ED620A5E29100954488 /* main.cpp */; };
 		16EE3EDA20A5E29100954488 /* cute_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 16EE3ED920A5E29100954488 /* cute_image.jpg */; };
 		16EE3EDC20A5E29100954488 /* nice_music.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 16EE3EDB20A5E29100954488 /* nice_music.ogg */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		16E79A6620A6C63000625AB8 /* Zelda.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Zelda.png; sourceTree = "<group>"; };
 		16EE3ECE20A5E29100954488 /* TileMapEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TileMapEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16EE3ED220A5E29100954488 /* TileMapEditor-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TileMapEditor-Info.plist"; sourceTree = "<group>"; };
 		16EE3ED620A5E29100954488 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 		16EE3ED820A5E29100954488 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				16E79A6620A6C63000625AB8 /* Zelda.png */,
 				16EE3F0120A5F90200954488 /* Poke2.png */,
 				16EE3EF920A5F8F200954488 /* Interactable1.txt */,
 				16EE3EFB20A5F8F200954488 /* TextureNums1-2.txt */,
@@ -202,6 +205,7 @@
 				16EE3EFF20A5F8F200954488 /* TextureNums1-2.txt in Resources */,
 				16EE3EE720A5E5BC00954488 /* gun3_sheet.png in Resources */,
 				16EE3F0620A5F92700954488 /* ResourceHolder.inl in Resources */,
+				16E79A6720A6C63100625AB8 /* Zelda.png in Resources */,
 				16EE3EEF20A5EDB600954488 /* Grass.png in Resources */,
 				16EE3EDA20A5E29100954488 /* cute_image.jpg in Resources */,
 				16EE3F0C20A61E0100954488 /* NewTexture.txt in Resources */,

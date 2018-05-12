@@ -136,6 +136,7 @@ void Map::loadTextures(const std::string& fileName,const sf::Texture& spriteShee
             inFS>>texNum;
             if(texNum == -1){
                 tiles.at(j).at(i).setFillColor(sf::Color::Transparent, layerNumber);
+                tiles.at(j).at(i).setTexture(spriteSheet,layerNumber);
             }else{
                 tiles.at(j).at(i).setTexture(spriteSheet,layerNumber);
                 tiles.at(j).at(i).setTextureRect(getTextureRect(texNum),layerNumber);
@@ -283,6 +284,7 @@ void Map::setTexture(sf::Vector2u pos, int tileNum, int layer){
         tiles.at(pos.x).at(pos.y).setTextureKey(tileNum);
     }else if(layer == 2){
         tiles.at(pos.x).at(pos.y).setTextureRect(getTextureRect(tileNum), 2);
+        tiles.at(pos.x).at(pos.y).setFillColor(sf::Color::White, 2);
     }
 }
 
