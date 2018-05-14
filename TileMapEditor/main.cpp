@@ -16,7 +16,7 @@ int main()
     ResourceHolder<sf::Texture, Texture::ID> textures;
     ResourceHolder<sf::Font, Fonts::ID> fonts;
     try{
-        textures.load(Texture::Pokemon, "Zelda.png");
+        textures.load(Texture::Pokemon, "Outdoor.png");
         fonts.load(Fonts::Sansation, "sansation.ttf");
     }catch(std::runtime_error& e){
         std::cout<<"Fail"<<std::endl;
@@ -45,6 +45,8 @@ int main()
     
     //Selector Box for Textures
     sf::RectangleShape selectorTexture;
+    int tWidth{1};
+    int tHeight{1};
     selectorTexture.setSize(sf::Vector2f(TILESIZE,TILESIZE));
     selectorTexture.setOrigin(0, 0);
     selectorTexture.setFillColor(sf::Color(193, 66, 66, 150)); // red
@@ -206,6 +208,19 @@ int main()
                 if(layer == false){
                     for(int i = 0; i < width; i++){
                         for(int j = 0; j < height; j++){
+                            for(int k = 0; k < tWidth; k++){
+                                for(int l = 0; l < tHeight; l++){
+                                    sf::IntRect temp;
+                                    int left = static_cast<int>(selectorTexture.getPosition().x+TILESIZE*k);
+                                    int top = static_cast<int>(selectorTexture.getPosition().y+TILESIZE*l);
+                                    temp = sf::IntRect(left,top,TILESIZE,TILESIZE);
+                                     int tileNum = ((top/TILESIZE)*textures.get(Texture::Pokemon).getSize().x)/TILESIZE + left/TILESIZE;
+                                    if((mapPosX+i+k)*TILESIZE < map.width() && (mapPosY+j+l)*TILESIZE < map.height()){
+                                        map.setTexture(sf::Vector2u(mapPosX+i+k,mapPosY+j+l), tileNum, 1);
+                                    }
+                                }
+                            }
+                            /*
                             sf::IntRect temp;
                             int left = static_cast<int>(selectorTexture.getPosition().x);
                             int top = static_cast<int>(selectorTexture.getPosition().y);
@@ -213,10 +228,9 @@ int main()
                             
                             int tileNum = ((top/TILESIZE)*textures.get(Texture::Pokemon).getSize().x)/TILESIZE + left/TILESIZE;
                             
-                            
+                        
                             map.setTexture(sf::Vector2u(mapPosX+i,mapPosY+j), tileNum, 1);
-        
-                        std::cout<<static_cast<int>(selectorTexture.getPosition().y)*(textures.get(Texture::Pokemon).getSize().x/TILESIZE) + static_cast<int>(selectorTexture.getPosition().x)<<std::endl;
+                             */
                         }
                     }
                    
@@ -233,8 +247,8 @@ int main()
             }
                    
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Return)){
-                map.exportTextures("NewTexture.txt");
-                map.exportWalkable("NewWalkable.txt");
+                map.exportTextures("TextureNums1.txt");
+                map.exportWalkable("Walkable1.txt");
             }
             if(input.getKey(0)){
                 for(int i = 0; i < width; i++){
@@ -254,32 +268,90 @@ int main()
             if(input.getKeyUp(2)){
                 box = !box;
             }
-            if(input.getKeyUp(3)){
-                if((mapPosY+height)*TILESIZE < map.height()){
-                    selectorMap.setSize(sf::Vector2f(selectorMap.getSize().x,TILESIZE+selectorMap.getSize().y));
-                    height++;
+            //Increase or decrease the height of the texture selector
+            if(input.getKeyUp(9)){
+                if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)){
+                    if((selectorTexture.getPosition().y+tHeight*TILESIZE) < textures.get(Texture::Pokemon).getSize().y){
+                        selectorTexture.setSize(sf::Vector2f(selectorTexture.getSize().x,TILESIZE+selectorTexture.getSize().y));
+                        tHeight++;
+                    }else{
+                        if(selectorTexture.getPosition().y + selectorTexture.getSize().y+TILESIZE >= textures.get(Texture::Pokemon).getSize().y){
+                            selectorTexture.move(0,-TILESIZE);
+                            selectorTexture.setSize(sf::Vector2f(selectorTexture.getSize().x,TILESIZE+selectorTexture.getSize().y));
+                            tHeight++;
+                        }
+                    }
                 }else{
-                    if(mapPosY > 0){
-                        mapPosY--;
-                        selectorMap.move(0,-TILESIZE);
+                    if(tHeight > 1){
+                        selectorTexture.setSize(sf::Vector2f(selectorTexture.getSize().x,selectorTexture.getSize().y-TILESIZE));
+                        tHeight--;
+                    }
+                }
+            }
+            if(input.getKeyUp(10)){
+                if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)){
+                    if((selectorTexture.getPosition().x+tWidth*TILESIZE) < textures.get(Texture::Pokemon).getSize().x){
+                        selectorTexture.setSize(sf::Vector2f(TILESIZE+selectorTexture.getSize().x,selectorTexture.getSize().y));
+                        tWidth++;
+                    }else{
+                        if(selectorTexture.getPosition().x + selectorTexture.getSize().x+TILESIZE >= textures.get(Texture::Pokemon).getSize().x){
+                            selectorTexture.move(-TILESIZE, 0);
+                            selectorTexture.setSize(sf::Vector2f(selectorTexture.getSize().x+TILESIZE,selectorTexture.getSize().y));
+                            tWidth++;
+                        }
+                    }
+                }else{
+                    if(tWidth > 1){
+                        selectorTexture.setSize(sf::Vector2f(selectorTexture.getSize().x-TILESIZE,selectorTexture.getSize().y));
+                        tWidth--;
+                    }
+                }
+            }
+            
+            
+            //Increase or decrease the size of the map selector height
+            if(input.getKeyUp(3)){
+                if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)){
+                    if((mapPosY+height)*TILESIZE < map.height()){
                         selectorMap.setSize(sf::Vector2f(selectorMap.getSize().x,TILESIZE+selectorMap.getSize().y));
                         height++;
+                    }else{
+                        if(mapPosY > 0){
+                            mapPosY--;
+                            selectorMap.move(0,-TILESIZE);
+                            selectorMap.setSize(sf::Vector2f(selectorMap.getSize().x,TILESIZE+selectorMap.getSize().y));
+                            height++;
+                        }
+                    }
+                }else{
+                    if(height > 1){
+                    selectorMap.setSize(sf::Vector2f(selectorMap.getSize().x,selectorMap.getSize().y-TILESIZE));
+                    height--;
                     }
                 }
             }
+            //Increase or decrease the size of the map selector width
             if(input.getKeyUp(4)){
-                if((mapPosX+width)*TILESIZE < map.width()){
-                    selectorMap.setSize(sf::Vector2f(TILESIZE+selectorMap.getSize().x,selectorMap.getSize().y));
-                    width++;
-                }else{
-                    if(mapPosX > 0){
-                        mapPosX--;
-                        selectorMap.move(-TILESIZE,0);
+                if(!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)){
+                    if((mapPosX+width)*TILESIZE < map.width()){
                         selectorMap.setSize(sf::Vector2f(TILESIZE+selectorMap.getSize().x,selectorMap.getSize().y));
                         width++;
+                    }else{
+                        if(mapPosX > 0){
+                            mapPosX--;
+                            selectorMap.move(-TILESIZE,0);
+                            selectorMap.setSize(sf::Vector2f(TILESIZE+selectorMap.getSize().x,selectorMap.getSize().y));
+                            width++;
+                        }
+                    }
+                }else{
+                    if(width > 1){
+                        selectorMap.setSize(sf::Vector2f(selectorMap.getSize().x-TILESIZE,selectorMap.getSize().y));
+                        width--;
                     }
                 }
             }
+            
             if(input.getKeyUp(6)){
                 layer = !layer;
                 if(layer == false){
@@ -289,10 +361,18 @@ int main()
                 }
             }
             if(input.getKeyUp(7)){
-                view1.zoom(1.25);
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)){
+                    view1.zoom(.75);
+                }else{
+                    view1.zoom(1.25);
+                }
             }
             if(input.getKeyUp(8)){
-                view1.zoom(.75);
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)){
+                    view2.zoom(.75);
+                }else{
+                    view2.zoom(1.25);
+                }
             }
             if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
                 if(palette.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))){
@@ -306,13 +386,13 @@ int main()
         }
         input.update();
         
-        if(selectorMap.getPosition().x > view1.getViewport().width){
-            view1.setCenter(selectorMap.getPosition());
-        }
-        view2.setCenter(selectorTexture.getPosition());
+        
+        //Set the centers for the two views
+        view1.setCenter(sf::Vector2f(selectorMap.getPosition().x+selectorMap.getSize().x/2,selectorMap.getPosition().y+selectorMap.getSize().y/2));
+        view2.setCenter(sf::Vector2f(selectorTexture.getPosition().x+selectorTexture.getSize().x/2,selectorTexture.getPosition().y+selectorTexture.getSize().y/2));
         
         
-        window.setView(view1);
+
         
         //Updating Position Information for the two selectors
         mapPosition.setString(std::to_string(mapPosX) + "," + std::to_string(mapPosY));
@@ -321,10 +401,12 @@ int main()
         texturePosition.setString(std::to_string(static_cast<int>(selectorTexture.getPosition().x)) + "," + std::to_string(static_cast<int>(selectorTexture.getPosition().y)));
         texturePosition.setPosition(selectorTexture.getPosition().x + 7, selectorTexture.getPosition().y + 7);
         
-        //draw view1
+      
         
         
         window.clear(sf::Color::Black);
+        //draw view1
+        window.setView(view1);
         map.draw(&window,1);
         if(layer)
             map.draw(&window, 2);

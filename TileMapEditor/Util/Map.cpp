@@ -156,8 +156,9 @@ void Map::loadTextures(const std::string& fileName,const sf::Texture& spriteShee
 sf::IntRect Map::getTextureRect(int texNum){
     int topX = texNum * tSize;
     int topY = 0;
-    while(topX >= 128){
-        topX -= 128;
+    //REPLACE THIS WITH ACTUAL TEXTURE SIZE
+    while(topX >= 864){
+        topX -= 864;
         topY += tSize;
     }
     int width = tSize;

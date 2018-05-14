@@ -10,6 +10,8 @@
 		1616F16420A742E800BE60CB /* LinkToThePast.png in Resources */ = {isa = PBXBuildFile; fileRef = 1616F16320A742E800BE60CB /* LinkToThePast.png */; };
 		1616F16A20A752A300BE60CB /* Grid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1616F16820A752A300BE60CB /* Grid.cpp */; };
 		1616F16C20A76BE300BE60CB /* NewWalkable.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1616F16B20A76BE300BE60CB /* NewWalkable.txt */; };
+		16BB986D20AA229C009CCF8E /* Outdoor.png in Resources */ = {isa = PBXBuildFile; fileRef = 16BB986C20AA229B009CCF8E /* Outdoor.png */; };
+		16BB986F20AA22D4009CCF8E /* Outdoor.png in Resources */ = {isa = PBXBuildFile; fileRef = 16BB986E20AA22D3009CCF8E /* Outdoor.png */; };
 		16E79A6720A6C63100625AB8 /* Zelda.png in Resources */ = {isa = PBXBuildFile; fileRef = 16E79A6620A6C63000625AB8 /* Zelda.png */; };
 		16EE3ED720A5E29100954488 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 16EE3ED620A5E29100954488 /* main.cpp */; };
 		16EE3EDA20A5E29100954488 /* cute_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 16EE3ED920A5E29100954488 /* cute_image.jpg */; };
@@ -35,6 +37,8 @@
 		1616F16820A752A300BE60CB /* Grid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Grid.cpp; sourceTree = "<group>"; };
 		1616F16920A752A300BE60CB /* Grid.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Grid.hpp; sourceTree = "<group>"; };
 		1616F16B20A76BE300BE60CB /* NewWalkable.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NewWalkable.txt; sourceTree = "<group>"; };
+		16BB986C20AA229B009CCF8E /* Outdoor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Outdoor.png; sourceTree = "<group>"; };
+		16BB986E20AA22D3009CCF8E /* Outdoor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Outdoor.png; sourceTree = "<group>"; };
 		16E79A6620A6C63000625AB8 /* Zelda.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Zelda.png; sourceTree = "<group>"; };
 		16EE3ECE20A5E29100954488 /* TileMapEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TileMapEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		16EE3ED220A5E29100954488 /* TileMapEditor-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TileMapEditor-Info.plist"; sourceTree = "<group>"; };
@@ -111,7 +115,7 @@
 		16EE3ED820A5E29100954488 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				1616F16B20A76BE300BE60CB /* NewWalkable.txt */,
+				16BB986E20AA22D3009CCF8E /* Outdoor.png */,
 				16E79A6620A6C63000625AB8 /* Zelda.png */,
 				16EE3F0120A5F90200954488 /* Poke2.png */,
 				16EE3EF920A5F8F200954488 /* Interactable1.txt */,
@@ -126,6 +130,7 @@
 				1616F16320A742E800BE60CB /* LinkToThePast.png */,
 				16EE3EDF20A5E29100954488 /* icon.png */,
 				16EE3F0B20A61E0100954488 /* NewTexture.txt */,
+				1616F16B20A76BE300BE60CB /* NewWalkable.txt */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -133,6 +138,7 @@
 		16EE3F0720A5FA1800954488 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				16BB986C20AA229B009CCF8E /* Outdoor.png */,
 				16EE3F0920A608A200954488 /* Input.cpp */,
 				16EE3F0820A608A200954488 /* Input.hpp */,
 				16EE3EF620A5F88300954488 /* tile_node.cpp */,
@@ -208,6 +214,7 @@
 			files = (
 				16EE3EE020A5E29100954488 /* icon.png in Resources */,
 				16EE3F0020A5F8F200954488 /* Walkable1.txt in Resources */,
+				16BB986D20AA229C009CCF8E /* Outdoor.png in Resources */,
 				16EE3EDE20A5E29100954488 /* sansation.ttf in Resources */,
 				1616F16420A742E800BE60CB /* LinkToThePast.png in Resources */,
 				16EE3EDC20A5E29100954488 /* nice_music.ogg in Resources */,
@@ -217,6 +224,7 @@
 				16EE3EFF20A5F8F200954488 /* TextureNums1-2.txt in Resources */,
 				16EE3EE720A5E5BC00954488 /* gun3_sheet.png in Resources */,
 				1616F16C20A76BE300BE60CB /* NewWalkable.txt in Resources */,
+				16BB986F20AA22D4009CCF8E /* Outdoor.png in Resources */,
 				16EE3F0620A5F92700954488 /* ResourceHolder.inl in Resources */,
 				16E79A6720A6C63100625AB8 /* Zelda.png in Resources */,
 				16EE3EEF20A5EDB600954488 /* Grass.png in Resources */,
